@@ -2,3 +2,16 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+
+ .bundlez-form-table tr th {
+    width: 20%;
+ }
+
+ .bundlez-form-table tr td {
+    width: 30%;
+ }
+
+ .bundlez-form-input {
+    width: 90%;
+ }

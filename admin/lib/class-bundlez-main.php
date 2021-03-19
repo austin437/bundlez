@@ -4,6 +4,10 @@ if( ! defined('ABSPATH') ) exit;
 
 class Bundlez_Main {
 
+    private $memberpress_api;
+    private $plugin_name;
+    private $version;
+
     /**
 	 * Initialize the class and set its properties.
 	 *
@@ -11,8 +15,9 @@ class Bundlez_Main {
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( Bundlez_Memberpress_Api $memberpress_api, $plugin_name, $version ) {
 
+        $this->memberpress_api = $memberpress_api;
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
@@ -51,6 +56,11 @@ class Bundlez_Main {
     }
 
     public function render_settings_page(){
+
+        $memberpress_memberships = $this->memberpress_api->get_memberships();
+
         require_once ADMIN_PATH . '/partials/bundlez-admin-main.php';
     }
+
+    
 }

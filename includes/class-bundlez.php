@@ -118,6 +118,7 @@ class Bundlez {
 
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-main.php';
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-settings-api.php';
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-memberpress-api.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -161,7 +162,7 @@ class Bundlez {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_init', $plugin_admin, 'check_memberpress_installed' );
 
-        $main = new Bundlez_Main( $this->get_bundlez(), $this->get_version() );
+        $main = new Bundlez_Main( new Bundlez_Memberpress_Api( $this->get_bundlez(), $this->get_version() ), $this->get_bundlez(), $this->get_version() );
         $this->loader->add_action( 'admin_menu', $main, 'add_menu_pages' );
 
         $settings_api = new Bundlez_Settings_Api( $this->get_bundlez(), $this->get_version() );
