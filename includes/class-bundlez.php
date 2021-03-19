@@ -116,6 +116,8 @@ class Bundlez {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-bundlez-admin.php';
 
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-settings-api.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -156,6 +158,9 @@ class Bundlez {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+
+        $settings_api = new Bundlez_Settings_Api( $this->get_bundlez(), $this->get_version() );
+        $this->loader->add_action( 'admin_menu', $settings_api, 'add_menu_pages' );
 
 	}
 

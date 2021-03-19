@@ -37,6 +37,11 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'BUNDLEZ_VERSION', '1.0.0' );
 
+define( 'BASE_PATH',  plugin_dir_path( __DIR__ ) .'bundlez'   );
+define( 'ADMIN_PATH',  plugin_dir_path( __DIR__ ) .'bundlez/admin'   );
+define( 'PUBLIC_PATH',  plugin_dir_path( __DIR__ ) .'bundlez/public'   );
+define( 'LOG_PATH',  plugin_dir_path( __DIR__ ) .'bundlez/logs/debug.log'   );
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-bundlez-activator.php
