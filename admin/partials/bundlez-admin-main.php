@@ -28,7 +28,7 @@
 <h1>Bundlez</h1>
 <hr />
 
-<h2>Existing Bundles</h2>
+<h2>Existing Bundlez</h2>
 <hr />
 
 <?php foreach( $bundlez_options as $key => $bundlez_option ) { ?>
