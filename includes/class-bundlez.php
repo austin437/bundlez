@@ -72,7 +72,7 @@ class Bundlez {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->bundlez = 'bundlez';
+		$this->plugin_name = 'bundlez';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -120,6 +120,8 @@ class Bundlez {
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-settings-api.php';
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-memberpress-api.php';
 
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/lib/class-bundlez-register-txn-api.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -156,22 +158,25 @@ class Bundlez {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Bundlez_Admin( $this->get_bundlez(), $this->get_version() );
+		$plugin_admin = new Bundlez_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_init', $plugin_admin, 'check_memberpress_installed' );        
 
-        $main = new Bundlez_Main( new Bundlez_Memberpress_Api( $this->get_bundlez(), $this->get_version() ), $this->get_bundlez(), $this->get_version() );
+        $main = new Bundlez_Main( new Bundlez_Memberpress_Api( $this->get_plugin_name(), $this->get_version() ), $this->get_plugin_name(), $this->get_version() );
         $this->loader->add_action( 'admin_menu', $main, 'add_menu_pages' );
         $this->loader->add_action( 'admin_post_bundlez_add_new_bundle', $main, 'save_new_bundle' );
         $this->loader->add_action( 'admin_post_bundlez_delete_bundle', $main, 'delete_bundle' );
 
-        $settings_api = new Bundlez_Settings_Api( $this->get_bundlez(), $this->get_version() );
+        $settings_api = new Bundlez_Settings_Api( $this->get_plugin_name(), $this->get_version() );
 
         $this->loader->add_action( 'admin_menu', $settings_api, 'register_options_page' );
         $this->loader->add_action( 'admin_head', $settings_api, 'options_page_css' );
         $this->loader->add_action( 'admin_init', $settings_api, 'register_settings' );
+
+        $register_txn = new Bundlez_Register_Txn_Api();
+        $this->loader->add_action( 'mepr-txn-status-complete', $register_txn, 'mepr_txn_status_complete' );
 
 
 	}
@@ -185,7 +190,7 @@ class Bundlez {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Bundlez_Public( $this->get_bundlez(), $this->get_version() );
+		$plugin_public = new Bundlez_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -208,8 +213,8 @@ class Bundlez {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_bundlez() {
-		return $this->bundlez;
+	public function get_plugin_name() {
+		return $this->plugin_name;
 	}
 
 	/**
