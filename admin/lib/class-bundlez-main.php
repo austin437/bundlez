@@ -132,7 +132,7 @@ class Bundlez_Main {
 
         update_option( 'bundlez_option', $bundlez_option );
 
-        wp_redirect(admin_url('admin.php?page=bundlez'));
+        wp_redirect(admin_url('admin.php?page=bundlez&created=1'));
 
         die();
     }
@@ -150,7 +150,7 @@ class Bundlez_Main {
 
         update_option( 'bundlez_option', $bundlez_option );
 
-        wp_redirect(admin_url('admin.php?page=bundlez'));
+        wp_redirect(admin_url('admin.php?page=bundlez&deleted=1'));
 
         die();
        

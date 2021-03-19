@@ -3,13 +3,22 @@
  * included in this file.
  */
 
+ .bundlez-form-table {
+     text-align: left;
+ }
 
  .bundlez-form-table tr th {
+    text-align: left;
     width: 20%;
  }
 
  .bundlez-form-table tr td {
     width: 30%;
+ }
+
+ .bundlez-form-table tr th,
+ .bundlez-form-table tr td {
+    padding: 5px 40px 5px 5px;
  }
 
  .bundlez-form-input {
