@@ -1,0 +1,24 @@
+Array
+(
+    [bundle_name] => Bundle 2 Student
+    [bundle_membership] => Array
+        (
+            [membership_id] => 10
+            [membership_title] => Bundle 2 Student
+        )
+
+    [cm] => Array
+        (
+            [membership_amount] => 48
+            [membership_id] => 135
+            [membership_title] => Test Membership
+        )
+
+    [cc] => Array
+        (
+            [membership_amount] => 48
+            [membership_id] => 5286
+            [membership_title] => CYL - Family Fake
+        )
+
+)
