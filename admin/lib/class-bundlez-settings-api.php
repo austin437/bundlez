@@ -1,6 +1,6 @@
 <?php
 
-if( ! defined('ABSPATH') ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Bundlez_Settings_Api {
 
@@ -18,39 +18,80 @@ class Bundlez_Settings_Api {
 
 	}
 
-    public function add_menu_pages(){
-        add_menu_page(  
-            'Bundlez', 
-            'Bundlez', 
-            'manage_options', 
-            'bundlez-settings',  
-            array( $this, 'render_settings_page' ),
-            'dashicons-paperclip',
-            '2'
-        );
-
-        add_submenu_page( 'bundlez-settings', 'Bundlez', 'Settings', 'manage_options', 'bundlez-settings');
-
-    }   
-
-
-
-    public function register(){
-        register_setting( 
-            'ipn_redirect_options_group', 
-            'ipn_redirect_sandbox_mode', 
-            array( 
-                'type' => 'string', 
-                'sanitize_callback' => array( $this, 'sanitize_me' )  
-            ) 
-        );      
+    public function register_options_page() {
+        add_options_page('Bundlez Settings', 'Bundlez', 'manage_options', 'bundlez-settings', array( $this, 'options_page' ) );
     }
 
-    public function sanitize_me( $input ){
-        return $input;
+    public function options_page_css() {
+        echo "
+            <style type='text/css'>
+                .bundlez-text-input {
+                    width: 20rem;
+                }
+            </style>
+        ";
     }
 
-    public function render_settings_page(){
-        require_once ADMIN_PATH . '/partials/bundlez-admin-settings.php';
+    public function options_page() {
+
+        $bundlez_cm_memberpress_url = get_option('bundlez_cm_memberpress_url');
+        $bundlez_cm_memberpress_api = get_option('bundlez_cm_memberpress_api');
+
+        if( $bundlez_cm_memberpress_url ) 
+        {
+            $cm_memberships = json_decode(
+                wp_remote_get( 
+                    $bundlez_cm_memberpress_url . '/memberships?per_page=1000',
+                    array(
+                        'headers' => array(
+                            'MEMBERPRESS-API-KEY' => $bundlez_cm_memberpress_api
+                        )
+                    )
+                )['body']
+            );
+        }
+        else
+        {
+            $cm_memberships = [];
+        }
+        
+
+        if( ! is_array( $cm_memberships ) ) $cm_memberships = [];        
+
+        $bundlez_cc_memberpress_url = get_option('bundlez_cc_memberpress_url');
+        $bundlez_cc_memberpress_api = get_option('bundlez_cc_memberpress_api');
+
+        if( $bundlez_cc_memberpress_url ) 
+        {
+            $cc_memberships = json_decode(
+                wp_remote_get( 
+                    $bundlez_cc_memberpress_url . '/memberships?per_page=1000',
+                    array(
+                        'headers' => array(
+                            'MEMBERPRESS-API-KEY' => $bundlez_cc_memberpress_api
+                        )
+                    )
+                )['body']
+            );
+        }
+        else
+        {
+            $cc_memberships = [];
+        }
+
+        if( ! is_array( $cc_memberships ) ) $cc_memberships = [];
+        
+        require_once ADMIN_PATH . '/partials/bundlez-admin-settings-page.php';
     }
+
+    public function register_settings() {
+
+        register_setting( 'bundlez_options_group', 'bundlez_cm_memberpress_url', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'  ) );
+        register_setting( 'bundlez_options_group', 'bundlez_cm_memberpress_api', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'  ) );
+
+        register_setting( 'bundlez_options_group', 'bundlez_cc_memberpress_url', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'  ) );
+        register_setting( 'bundlez_options_group', 'bundlez_cc_memberpress_api', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'  ) );
+
+    }
+
 }
