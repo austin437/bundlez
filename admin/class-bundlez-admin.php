@@ -100,4 +100,25 @@ class Bundlez_Admin {
 
 	}
 
+
+    public function check_memberpress_installed(){
+        if ( is_admin() && current_user_can( 'activate_plugins' ) &&  ! is_plugin_active( 'memberpress/memberpress.php' ) ) {
+        add_action( 'admin_notices', array( $this, 'memberpress_not_installed_notice' ) );
+
+            deactivate_plugins( BASE_NAME ); 
+
+            if ( isset( $_GET['activate'] ) ) {
+                unset( $_GET['activate'] );
+            }
+        }
+    }
+
+    function memberpress_not_installed_notice(){
+        ?>
+            <div class="error">
+                <p>Sorry, but Bundlez requires MemberPress to be installed and active.</p>
+            </div>
+        <?php
+    }
+
 }

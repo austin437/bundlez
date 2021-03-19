@@ -159,6 +159,7 @@ class Bundlez {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+        $this->loader->add_action( 'admin_init', $plugin_admin, 'check_memberpress_installed' );
 
         $main = new Bundlez_Main( $this->get_bundlez(), $this->get_version() );
         $this->loader->add_action( 'admin_menu', $main, 'add_menu_pages' );
