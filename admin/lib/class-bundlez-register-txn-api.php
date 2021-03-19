@@ -50,6 +50,8 @@ class Bundlez_Register_Txn_Api {
             'memberpress_api' => get_option('bundlez_cm_memberpress_api'),
             'membership_id' => $this->bundle['cm']['membership_id'],
             'membership_amount' => $this->bundle['cm']['membership_amount'],
+            'send_welcome_email' => false,
+            'send_password_email' => false
         );
     }
 
@@ -59,6 +61,8 @@ class Bundlez_Register_Txn_Api {
             'memberpress_api' => get_option('bundlez_cc_memberpress_api'),
             'membership_id' => $this->bundle['cc']['membership_id'],
             'membership_amount' => $this->bundle['cc']['membership_amount'],
+            'send_welcome_email' => true,
+            'send_password_email' => true
         );
     }
 
@@ -97,6 +101,8 @@ class Bundlez_Register_Txn_Api {
                 'username' => $this->user->user_login,
                 'first_name' => $this->user->first_name,
                 'last_name' => $this->user->last_name,
+                'send_welcome_email' => $data['send_welcome_email'],
+                'send_password_email' => $data['send_password_email'],
                 'transaction' => array(
                     'membership' => $data['membership_id'],
                     'status' => 'complete',
