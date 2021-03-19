@@ -7,8 +7,7 @@ class Bundlez_Register_Txn_Api {
     private $txn;
     private $user;
     private $bundle;
-    private $membership;
-
+   
     function __construct()
     {
         $this->cm_object = new stdClass();
@@ -26,9 +25,14 @@ class Bundlez_Register_Txn_Api {
 
         $cm_object = $this->load_cm_object();
         $cm_response = $this->send_remote_txn( $cm_object );
+        if ( is_wp_error( $cm_response ) ) throw new \Exception( $cm_response->get_error_message() );     
 
         $cc_object = $this->load_cc_object();
         $cc_response = $this->send_remote_txn( $cc_object );
+        if ( is_wp_error( $cc_response ) ) throw new \Exception( $cc_response->get_error_message() );     
+
+        $convict_response = $this->send_to_convict( $cm_object );
+        if ( is_wp_error( $convict_response ) ) throw new \Exception( $cm_response->get_error_message() );     
 
         // error_log( print_r( $txn, true ), 3, LOG_PATH );
         // error_log( print_r( $this->membership, true ), 3, LOG_PATH );
@@ -109,9 +113,43 @@ class Bundlez_Register_Txn_Api {
 
     }
 
-    private function send_to_convict( $txn_data )
+    private function send_to_convict( $data )
     {
+        $body = array(
+            'method'      => 'POST',
+            'timeout'     => 45,
+            'redirection' => 5,
+            'httpversion' => '1.0',
+            'blocking'    => true,
+            'headers'     => array(),
+            'body' =>  json_encode( array(
+                'data' => array(
+                    'expires_at' => $this->txn->rec->expires_at,
+                    'member' => array(
+                        'first_name' => $this->user->first_name,
+                        'last_name' => $this->user->last_name,
+                        'email' => $this->user->user_email,
+                        'profile' => array(
+                            'mepr_house_no' => '',
+                            'mepr_postcode' => '',
+                            'mepr_country' => '',
+                            'mepr_mobile' => '',
+                        )
+                    ),
+                    'membership' => array(
+                        'id' => $data['membership_id'],
+                        'period' => '1',
+                        'price' => $data['membership_amount'],
+                    )
+                )
+            ) ),
+            'cookies'  => array()
+        );
 
+        //error_log( print_r( $body, true ), 3, LOG_PATH );
+        
+        $response = wp_remote_post( 'http://178.62.67.10/payments.php', $body );
+                
     }
 
 }
