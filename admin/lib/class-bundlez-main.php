@@ -57,9 +57,104 @@ class Bundlez_Main {
 
     public function render_settings_page(){
 
+        $bundlez_options = get_option( 'bundlez_option', [] );
+
         $memberpress_memberships = $this->memberpress_api->get_memberships();
 
+        $bundlez_cm_memberpress_url = get_option('bundlez_cm_memberpress_url');
+        $bundlez_cm_memberpress_api = get_option('bundlez_cm_memberpress_api');
+
+        if( $bundlez_cm_memberpress_url ) 
+        {
+            $bundlez_cm_memberships = json_decode(
+                wp_remote_get( 
+                    $bundlez_cm_memberpress_url . '/memberships?per_page=1000',
+                    array(
+                        'headers' => array(
+                            'MEMBERPRESS-API-KEY' => $bundlez_cm_memberpress_api
+                        )
+                    )
+                )['body']
+            );
+        }
+        else
+        {
+            $bundlez_cm_memberships = [];
+        }
+
+        $bundlez_cc_memberpress_url = get_option('bundlez_cc_memberpress_url');
+        $bundlez_cc_memberpress_api = get_option('bundlez_cc_memberpress_api');
+
+        if( $bundlez_cc_memberpress_url ) 
+        {
+            $bundlez_cc_memberships = json_decode(
+                wp_remote_get( 
+                    $bundlez_cc_memberpress_url . '/memberships?per_page=1000',
+                    array(
+                        'headers' => array(
+                            'MEMBERPRESS-API-KEY' => $bundlez_cc_memberpress_api
+                        )
+                    )
+                )['body']
+            );
+        }
+        else
+        {
+            $bundlez_cc_memberships = [];
+        }
+
         require_once ADMIN_PATH . '/partials/bundlez-admin-main.php';
+    }
+
+    public function save_new_bundle(){
+        check_admin_referer( 'add-new-bundle');
+
+        $post_data = sanitize_post( $_POST );
+
+        $bundle_membership = explode( "|", $post_data['bundlez']['bundle_membership']) ;
+        $post_data['bundlez']['bundle_membership'] = [];
+        $post_data['bundlez']['bundle_membership']['membership_id'] = $bundle_membership[0];
+        $post_data['bundlez']['bundle_membership']['membership_title'] = $bundle_membership[1];
+    
+        $cm_membership = explode( "|", $post_data['bundlez']['cm']['membership']) ;
+        $post_data['bundlez']['cm']['membership_id'] = $cm_membership[0];
+        $post_data['bundlez']['cm']['membership_title'] = $cm_membership[1];
+        unset($post_data['bundlez']['cm']['membership']);
+
+        $cc_membership = explode( "|", $post_data['bundlez']['cc']['membership']) ;
+        $post_data['bundlez']['cc']['membership_id'] = $cc_membership[0];
+        $post_data['bundlez']['cc']['membership_title'] = $cc_membership[1];
+        unset($post_data['bundlez']['cc']['membership']);
+
+        $bundlez_option = get_option( 'bundlez_option', [] );
+
+        $bundlez_option[] = $post_data['bundlez'];
+
+        update_option( 'bundlez_option', $bundlez_option );
+
+        wp_redirect(admin_url('admin.php?page=bundlez'));
+
+        die();
+    }
+
+    public function delete_bundle(){
+        check_admin_referer( 'delete-bundle');
+
+        $post_data = sanitize_post( $_POST );
+
+        $bundle_key = $post_data['bundle_key'];
+
+        $bundlez_option = get_option( 'bundlez_option', [] );
+
+        unset( $bundlez_option[$bundle_key]);
+
+        update_option( 'bundlez_option', $bundlez_option );
+
+        wp_redirect(admin_url('admin.php?page=bundlez'));
+
+        die();
+       
+
     }
 
     

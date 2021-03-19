@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'BUNDLEZ_VERSION', '1.0.1' );
+define( 'BUNDLEZ_VERSION', '1.0.2' );
 
 define( 'BASE_NAME', plugin_basename( __FILE__ ) );
 define( 'BASE_PATH',  plugin_dir_path( __DIR__ ) .'bundlez'   );

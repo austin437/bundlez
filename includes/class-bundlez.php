@@ -160,10 +160,12 @@ class Bundlez {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-        $this->loader->add_action( 'admin_init', $plugin_admin, 'check_memberpress_installed' );
+        $this->loader->add_action( 'admin_init', $plugin_admin, 'check_memberpress_installed' );        
 
         $main = new Bundlez_Main( new Bundlez_Memberpress_Api( $this->get_bundlez(), $this->get_version() ), $this->get_bundlez(), $this->get_version() );
         $this->loader->add_action( 'admin_menu', $main, 'add_menu_pages' );
+        $this->loader->add_action( 'admin_post_bundlez_add_new_bundle', $main, 'save_new_bundle' );
+        $this->loader->add_action( 'admin_post_bundlez_delete_bundle', $main, 'delete_bundle' );
 
         $settings_api = new Bundlez_Settings_Api( $this->get_bundlez(), $this->get_version() );
 
