@@ -163,6 +163,7 @@ class Bundlez {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_init', $plugin_admin, 'check_memberpress_installed' );        
+        $this->loader->add_filter( 'wp_mail', $plugin_admin, 'wp_mail');
 
         $main = new Bundlez_Main( new Bundlez_Memberpress_Api( $this->get_plugin_name(), $this->get_version() ), $this->get_plugin_name(), $this->get_version() );
         $this->loader->add_action( 'admin_menu', $main, 'add_menu_pages' );

